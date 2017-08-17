@@ -1,6 +1,6 @@
-FREQUENCIES_FILE_PATH = 'data/freqs.pkl'
-WORD2VEC_MODEL_PATH = 'data/GoogleNews-vectors-negative300.bin.gz'
-SIMS_FILE_PATH = 'data/sims/sims'
+FREQUENCIES_FILE_PATH = 'freqs.pkl'
+WORD2VEC_MODEL_PATH = './GoogleNews-vectors-negative300.bin.gz'
+SIMS_FILE_PATH = 'sims/sims'
 
-MIN_WORD2VEC_SIMILARITY = 0.4
-MAX_WORD_FREQUENCY = 200
+MIN_WORD2VEC_SIMILARITY = 0.35
+MAX_WORD_FREQUENCY = 500
