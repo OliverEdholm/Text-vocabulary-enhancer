@@ -68,10 +68,14 @@ def filter_similarities(main_word, synonyms, min_similarity, model):
 			if model.get_similarity(main_word, word) >= min_similarity]
 
 
+def convert_tag(tag):
+	return tag[0]
+
+
 def filter_pos_tags(main_word, synonyms, main_pos_tag=None):
 	logging.debug('filtering pos tags')
 	def get_word_pos_tag(word):
-		return pos_tag([word])[0][1]
+		return convert_tag(pos_tag([word])[0][1])
 
 	if main_pos_tag is None:
 		main_pos_tag = get_word_pos_tag(main_word)
@@ -86,7 +90,7 @@ def get_advanced_words(word, frequencies, sims_model, word_tag=None):
 	syns = get_synonyms(word)
 	syns = filter_similarities(word, syns, configs.MIN_WORD2VEC_SIMILARITY,
 							   sims_model)
-	syns = filter_frequencies(syns, 0, 0, configs.MAX_WORD_FREQUENCY, frequencies)
+	syns = filter_frequencies(syns, configs.MAX_WORD_FREQUENCY, frequencies)
 	syns = filter_pos_tags(word, syns, main_pos_tag=word_tag)
 
 	return syns
@@ -94,11 +98,11 @@ def get_advanced_words(word, frequencies, sims_model, word_tag=None):
 
 def tag_text(text):
 	logging.debug('pos tagging text')
-	return pos_tag(word_tokenize(text))
+	return [(word, convert_tag(tag)) for word, tag in pos_tag(word_tokenize(text))]
 
 
 def is_accepted(word, tag):
-	return tag[0] in 'VN'
+	return True
 
 
 def transform_sentence(sentence, frequencies, sims_model):
@@ -134,15 +138,7 @@ def main():
 	frequencies = Frequencies()
 	sims_model = SimsModel() 
 
-	sentence = '''
-	My first girlfriend's father was an alleged Klansman, and her grandfather was definitely a member. She told me in great detail what it's like. Couple points here.
-
-	A lot of bad information filters to you: She started dating me believing all kinds of pseudoscientific BS myths about race, from "larger adrenal glands" in African-descended people to arguments about higher crime rates as proof of racial differences.
-	Rebelliousness: She dated a black guy before me in secret specifically to get back at her racist father, part of general teenaged rebelliousness. She said she was afraid for him.
-	They're assholes: He was an asshole. Tried to pick a fight with me once because I DIDN'T get between him and her when they were yelling at each other. Scary guy.
-	Sins of the father...: Aren't hereditary. Once she started getting older and started finding out how full of crap those racist myths were (I helped there), she started really strongly opposing everything her ancestors stood for. She considered talking to the FBI once because she found a gun in her car after her dad borrowed it, but since there were no shootings around that time, didn't end up bothering. Being the kid of a racist person doesn't make you racist, as long as you're able to have the prejudices you were taught confronted while your mind is still flexible enough to accept it.
-	Yeah, it was a mess.
-	'''
+	sentence = sys.argv[1]
 
 	transformed = transform_sentence(sentence, frequencies, sims_model)
 	print(transformed)
@@ -150,4 +146,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-	
