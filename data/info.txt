@@ -1,0 +1,1 @@
+Drag your Word2Vec model here. Otherwise, leave this folder alone if you don't know how it works.
